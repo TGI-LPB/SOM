@@ -1,32 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Aplikasi SO iOS</title>
   <style>
-    :root { --ios-blue: #007AFF; --ios-green: #34C759; --ios-red: #FF3B30; --ios-bg: #F2F2F7; --ios-card: #FFFFFF; --ios-border: #C6C6C8; --ios-text: #000000; }
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--ios-bg); margin: 0; padding: 0; color: var(--ios-text); }
-    .ios-header { background-color: var(--ios-card); padding: 16px; text-align: center; font-weight: 600; font-size: 17px; border-bottom: 0.5px solid var(--ios-border); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+    /* iOS Style CSS - Mobile Optimized */
+    :root { 
+      --ios-blue: #007AFF; --ios-green: #34C759; --ios-red: #FF3B30; 
+      --ios-bg: #F2F2F7; --ios-card: #FFFFFF; --ios-border: #C6C6C8; --ios-text: #000000; 
+    }
+    
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background-color: var(--ios-bg); 
+      margin: 0; 
+      padding: 0; 
+      color: var(--ios-text); 
+      -webkit-tap-highlight-color: transparent; /* Hilangkan highlight biru saat tombol ditekan di HP */
+    }
+    
+    .ios-header { 
+      background-color: var(--ios-card); 
+      padding: 16px; 
+      text-align: center; 
+      font-weight: 600; 
+      font-size: 17px; 
+      border-bottom: 0.5px solid var(--ios-border); 
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    
     .header-btn { color: var(--ios-blue); background: none; border: none; font-size: 16px; cursor: pointer; padding: 0;}
-    .container { padding: 16px; }
-    .ios-card { background-color: var(--ios-card); border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .ios-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 0.5px solid var(--ios-border); border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-    .ios-button { background-color: var(--ios-blue); color: white; border: none; border-radius: 10px; padding: 14px; font-size: 17px; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 8px; }
+    
+    .container { padding: 16px; box-sizing: border-box; width: 100%; max-width: 600px; margin: 0 auto; }
+    
+    .ios-card { 
+      background-color: var(--ios-card); 
+      border-radius: 10px; 
+      padding: 16px; 
+      margin-bottom: 16px; 
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+      width: 100%; 
+      box-sizing: border-box;
+    }
+    
+    .ios-input { 
+      width: 100%; 
+      padding: 14px 12px; 
+      margin-bottom: 12px; 
+      border: 0.5px solid var(--ios-border); 
+      border-radius: 8px; 
+      font-size: 16px; /* 16px mencegah iPhone auto-zoom */
+      box-sizing: border-box; 
+      background-color: #fff;
+      -webkit-appearance: none;
+    }
+    
+    .ios-button { 
+      background-color: var(--ios-blue); 
+      color: white; 
+      border: none; 
+      border-radius: 10px; 
+      padding: 14px; 
+      font-size: 17px; 
+      font-weight: 600; 
+      width: 100%; 
+      cursor: pointer; 
+      margin-bottom: 8px; 
+      box-sizing: border-box;
+    }
+    
+    .ios-button:active { opacity: 0.7; }
     .ios-button:disabled { opacity: 0.5; }
-    .btn-text { background: none; color: var(--ios-blue); border: none; font-size: 14px; width: 100%; padding: 10px; cursor: pointer; }
+    
+    .btn-text { background: none; color: var(--ios-blue); border: none; font-size: 15px; width: 100%; padding: 10px; cursor: pointer; }
     .btn-green { background-color: var(--ios-green); }
     .btn-red { background-color: var(--ios-red); }
     
     .data-row { border-bottom: 0.5px solid var(--ios-border); padding: 12px 0; font-size: 14px; }
     .data-row:last-child { border-bottom: none; }
     .data-title { font-weight: 600; font-size: 16px; margin-bottom: 4px;}
-    .data-subtitle { color: #8E8E93; }
+    .data-subtitle { color: #8E8E93; font-size: 13px; line-height: 1.4;}
     
+    /* App Sections */
     #mainApp, #loginSection, #registerSection, #adminSection, #loading { display: none; }
-    #loading { text-align: center; margin-top: 20px; color: #8E8E93; }
+    #loading { text-align: center; margin-top: 20px; color: #8E8E93; font-size: 15px;}
     .badge-pending { background-color: #FF9500; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
     .badge-active { background-color: var(--ios-green); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    
+    /* Layout untuk filter tanggal agar rapi di layar kecil */
+    .filter-date-group { display: flex; gap: 10px; width: 100%; }
+    .filter-date-group .ios-input { flex: 1; min-width: 0; padding: 12px; }
   </style>
 </head>
 <body>
@@ -37,12 +106,11 @@
     <div class="ios-header" style="justify-content: center;">Login SO App</div>
     <div class="container">
       <div class="ios-card">
-        <input type="text" id="logUser" class="ios-input" placeholder="Username (Untuk Login)">
+        <input type="text" id="logUser" class="ios-input" placeholder="Username">
         <input type="password" id="logPass" class="ios-input" placeholder="Password">
         <button id="btnLogin" class="ios-button" onclick="login()">Login</button>
         <button class="btn-text" onclick="showSection('registerSection')">Belum punya akun? Daftar</button>
       </div>
-      <button class="ios-button" style="background-color: #8E8E93;" onclick="setupSheet()">🛠 Setup Sheet (1x Saja)</button>
     </div>
   </div>
 
@@ -54,7 +122,7 @@
     </div>
     <div class="container">
       <div class="ios-card">
-        <p style="font-size: 14px; color: #8E8E93; text-align: center;">Isi Nama Staff sesuai dengan data di Sheet SOM.</p>
+        <p style="font-size: 14px; color: #8E8E93; text-align: center; margin-top: 0;">Isi Nama Staff sesuai dengan data di Sheet SOM.</p>
         <input type="text" id="regUser" class="ios-input" placeholder="Buat Username">
         <input type="text" id="regStaff" class="ios-input" placeholder="Nama Staff (Persis di sheet)">
         <input type="password" id="regPass" class="ios-input" placeholder="Buat Password">
@@ -69,18 +137,19 @@
       <button class="header-btn" onclick="logout()">Logout</button>
     </div>
     <div class="container">
-      <button id="btnAdminPanel" class="ios-button btn-green" style="display: none;" onclick="openAdminPanel()">👨‍💼 Buka Admin Panel</button>
+      <button id="btnAdminPanel" class="ios-button btn-green" style="display: none; margin-bottom: 16px;" onclick="openAdminPanel()">👨‍💼 Buka Admin Panel</button>
 
       <div class="ios-card">
         <h3 style="margin-top:0; font-size: 15px; color: #8E8E93;">Filter Data</h3>
-        <input type="text" id="filterBrand" class="ios-input" placeholder="Brand...">
-        <div style="display: flex; gap: 10px;">
+        <input type="text" id="filterBrand" class="ios-input" placeholder="Cari Brand...">
+        <div class="filter-date-group">
           <input type="date" id="filterStartDate" class="ios-input" title="Tanggal Awal">
           <input type="date" id="filterEndDate" class="ios-input" title="Tanggal Akhir">
         </div>
-        <button class="ios-button" onclick="applyFilter()">Terapkan Filter</button>
+        <button class="ios-button" style="margin-top: 4px;" onclick="applyFilter()">Terapkan Filter</button>
       </div>
-      <div class="ios-card" id="dataContainer"></div>
+      
+      <div class="ios-card" id="dataContainer" style="padding-top: 8px;"></div>
     </div>
   </div>
 
@@ -91,14 +160,14 @@
       <div style="width:40px;"></div>
     </div>
     <div class="container">
-      <div class="ios-card" id="adminDataContainer">
-        <div style="text-align: center; color: #8E8E93;">Memuat daftar user...</div>
+      <div class="ios-card" id="adminDataContainer" style="padding-top: 8px;">
+        <div style="text-align: center; color: #8E8E93; padding: 20px 0;">Memuat daftar user...</div>
       </div>
     </div>
   </div>
 
   <script>
-    // MASUKKAN URL BARU DI SINI
+    // MASUKKAN URL API DARI GOOGLE APPS SCRIPT DI SINI
     const API_URL = "https://script.google.com/macros/s/AKfycbyoeLpW0TjiZkohun0VDgdJ7jV0EvaTVRO8y5NWL1xu6Dez5RGk0TEB2Hi6kV6jzSWU/exec"; 
 
     let rawData = [];
@@ -110,6 +179,7 @@
         document.getElementById(id).style.display = 'none';
       });
       document.getElementById(sectionId).style.display = 'block';
+      window.scrollTo(0, 0); // Reset scroll ke atas saat pindah halaman
     }
 
     window.onload = async function() {
@@ -147,7 +217,7 @@
     }
 
     async function login() {
-      if(API_URL === "URL_WEB_APP_ANDA_DISINI") return alert("Isi API_URL terlebih dahulu!");
+      if(API_URL === "URL_WEB_APP_ANDA_DISINI") return alert("Isi API_URL terlebih dahulu di dalam kode HTML!");
       const user = document.getElementById('logUser').value;
       const pass = document.getElementById('logPass').value;
       if(!user || !pass) return alert("Isi username dan password!");
@@ -166,7 +236,7 @@
           document.getElementById('loading').style.display = 'none';
           alert(data.message);
         }
-      } catch(e) { alert("Gagal koneksi."); document.getElementById('loading').style.display = 'none';}
+      } catch(e) { alert("Gagal koneksi ke server."); document.getElementById('loading').style.display = 'none';}
     }
 
     async function register() {
@@ -184,6 +254,9 @@
         
         if(data.success) {
           alert(data.message);
+          document.getElementById('regUser').value = '';
+          document.getElementById('regStaff').value = '';
+          document.getElementById('regPass').value = '';
           showSection('loginSection');
         } else { alert(data.error); }
       } catch(e) { alert("Gagal mendaftar."); document.getElementById('loading').style.display = 'none'; }
@@ -193,6 +266,7 @@
       localStorage.clear();
       document.getElementById('logUser').value = '';
       document.getElementById('logPass').value = '';
+      document.getElementById('dataContainer').innerHTML = '';
       currentUser = ""; currentRole = "";
       showSection('loginSection');
     }
@@ -203,9 +277,16 @@
         const res = await fetch(`${API_URL}?action=getData&user=${currentUser}`);
         const result = await res.json();
         document.getElementById('loading').style.display = 'none';
-        if(result.error) alert(result.error);
-        else { rawData = result.data; applyFilter(); }
-      } catch(e) { document.getElementById('loading').style.display = 'none'; }
+        if(result.error) {
+          alert(result.error);
+        } else { 
+          rawData = result.data; 
+          applyFilter(); 
+        }
+      } catch(e) { 
+        document.getElementById('loading').style.display = 'none'; 
+        alert("Gagal menarik data dari server.");
+      }
     }
 
     function applyFilter() {
@@ -233,17 +314,23 @@
     function renderData(dataToRender) {
       const container = document.getElementById('dataContainer');
       container.innerHTML = '';
-      if (dataToRender.length <= 1) { container.innerHTML = '<div style="text-align: center; color: #8E8E93;">Tidak ada data.</div>'; return; }
+      if (dataToRender.length <= 1) { 
+        container.innerHTML = '<div style="text-align: center; color: #8E8E93; padding: 20px 0;">Tidak ada data ditemukan.</div>'; 
+        return; 
+      }
 
       for (let i = 1; i < dataToRender.length; i++) {
         const row = dataToRender[i];
         container.innerHTML += `
           <div class="data-row">
-            <div style="display: flex; justify-content: space-between;">
-              <span class="data-title">${row[4] || '-'} - ${row[6] || '-'}</span>
-              <span style="color: var(--ios-blue); font-weight: bold;">Qty: ${row[8] || '0'}</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <span class="data-title" style="flex: 1; padding-right: 10px;">${row[4] || '-'} - ${row[6] || '-'}</span>
+              <span style="color: var(--ios-blue); font-weight: bold; font-size: 15px;">Qty: ${row[8] || '0'}</span>
             </div>
-            <div class="data-subtitle">Tgl: ${row[0] || '-'} | Staff: ${row[2] || '-'} | Code: ${row[5] || '-'}</div>
+            <div class="data-subtitle">
+              Tgl: ${row[0] || '-'} | Staff: ${row[2] || '-'} <br>
+              Code: ${row[5] || '-'} | ID: ${row[1] || '-'}
+            </div>
           </div>
         `;
       }
@@ -251,67 +338,72 @@
 
     async function openAdminPanel() {
       showSection('adminSection');
-      document.getElementById('adminDataContainer').innerHTML = '<div style="text-align: center; color: #8E8E93;">Memuat data...</div>';
+      document.getElementById('adminDataContainer').innerHTML = '<div style="text-align: center; color: #8E8E93; padding: 20px 0;">Memuat data...</div>';
       try {
         const res = await fetch(`${API_URL}?action=getUsers&adminUser=${currentUser}`);
         const result = await res.json();
-        if(result.error) alert(result.error);
-        else renderAdminUsers(result.data);
-      } catch(e) { alert("Gagal memuat admin panel."); }
+        if(result.error) {
+          alert(result.error);
+          showSection('mainApp');
+        } else {
+          renderAdminUsers(result.data);
+        }
+      } catch(e) { 
+        alert("Gagal memuat admin panel."); 
+        showSection('mainApp');
+      }
     }
 
     function renderAdminUsers(users) {
       const container = document.getElementById('adminDataContainer');
       container.innerHTML = '';
-      if(users.length === 0) { container.innerHTML = 'Tidak ada user lain.'; return; }
+      if(users.length === 0) { 
+        container.innerHTML = '<div style="text-align: center; color: #8E8E93; padding: 20px 0;">Tidak ada user terdaftar.</div>'; 
+        return; 
+      }
 
       users.forEach(u => {
         const statusBadge = u.status === 'Pending' ? `<span class="badge-pending">Pending</span>` : `<span class="badge-active">Active</span>`;
         let actionButtons = '';
         
         if (u.status === 'Pending') {
-          actionButtons = `<button class="ios-button btn-green" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'approveUser')">Approve</button>
-                           <button class="ios-button btn-red" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'rejectUser')">Tolak</button>`;
+          actionButtons = `
+            <button class="ios-button btn-green" style="padding: 10px; font-size:14px; flex: 1;" onclick="manageUser('${u.username}', 'approveUser')">Approve</button>
+            <button class="ios-button btn-red" style="padding: 10px; font-size:14px; flex: 1;" onclick="manageUser('${u.username}', 'rejectUser')">Tolak</button>
+          `;
         } else {
-          actionButtons = `<button class="ios-button btn-red" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'rejectUser')">Hapus</button>`;
+          actionButtons = `<button class="ios-button btn-red" style="padding: 10px; font-size:14px; flex: 1;" onclick="manageUser('${u.username}', 'rejectUser')">Hapus Akses</button>`;
         }
 
         container.innerHTML += `
-          <div class="data-row">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <div class="data-title">${u.username} ${statusBadge}</div>
-                <div class="data-subtitle">Nama Staff: ${u.staff}</div>
+          <div class="data-row" style="padding: 16px 0;">
+            <div style="margin-bottom: 12px;">
+              <div class="data-title" style="display: flex; align-items: center; justify-content: space-between;">
+                <span>${u.username}</span>
+                ${statusBadge}
               </div>
+              <div class="data-subtitle">Nama Staff: ${u.staff}</div>
             </div>
-            <div style="display: flex; gap: 10px; margin-top: 10px;">${actionButtons}</div>
+            <div style="display: flex; gap: 10px;">${actionButtons}</div>
           </div>
         `;
       });
     }
 
     async function manageUser(targetUser, action) {
-      if(!confirm(`Yakin ingin melakukan aksi ini pada ${targetUser}?`)) return;
+      const actionText = action === 'approveUser' ? 'menyetujui' : 'menghapus/menolak';
+      if(!confirm(`Yakin ingin ${actionText} akun ${targetUser}?`)) return;
+      
       document.getElementById('loading').style.display = 'block';
       try {
         const res = await fetch(`${API_URL}?action=${action}&adminUser=${currentUser}&targetUser=${targetUser}`);
         const data = await res.json();
         document.getElementById('loading').style.display = 'none';
         alert(data.message || data.error);
-        openAdminPanel(); // Refresh list
-      } catch(e) { document.getElementById('loading').style.display = 'none'; alert("Gagal!"); }
-    }
-
-    async function setupSheet() {
-      try { 
-        document.getElementById('loading').style.display = 'block';
-        const res = await fetch(`${API_URL}?action=setup`); 
-        const data = await res.json(); 
-        document.getElementById('loading').style.display = 'none';
-        alert(data.message); 
+        openAdminPanel(); // Refresh list otomatis
       } catch(e) { 
-        document.getElementById('loading').style.display = 'none';
-        alert("Gagal melakukan setup."); 
+        document.getElementById('loading').style.display = 'none'; 
+        alert("Proses gagal, periksa koneksi internet Anda."); 
       }
     }
   </script>
