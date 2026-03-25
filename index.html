@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aplikasi SO iOS</title>
+  <style>
+    :root { --ios-blue: #007AFF; --ios-green: #34C759; --ios-red: #FF3B30; --ios-bg: #F2F2F7; --ios-card: #FFFFFF; --ios-border: #C6C6C8; --ios-text: #000000; }
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background-color: var(--ios-bg); margin: 0; padding: 0; color: var(--ios-text); }
+    .ios-header { background-color: var(--ios-card); padding: 16px; text-align: center; font-weight: 600; font-size: 17px; border-bottom: 0.5px solid var(--ios-border); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+    .header-btn { color: var(--ios-blue); background: none; border: none; font-size: 16px; cursor: pointer; padding: 0;}
+    .container { padding: 16px; }
+    .ios-card { background-color: var(--ios-card); border-radius: 10px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+    .ios-input { width: 100%; padding: 12px; margin-bottom: 12px; border: 0.5px solid var(--ios-border); border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+    .ios-button { background-color: var(--ios-blue); color: white; border: none; border-radius: 10px; padding: 14px; font-size: 17px; font-weight: 600; width: 100%; cursor: pointer; margin-bottom: 8px; }
+    .ios-button:disabled { opacity: 0.5; }
+    .btn-text { background: none; color: var(--ios-blue); border: none; font-size: 14px; width: 100%; padding: 10px; cursor: pointer; }
+    .btn-green { background-color: var(--ios-green); }
+    .btn-red { background-color: var(--ios-red); }
+    
+    .data-row { border-bottom: 0.5px solid var(--ios-border); padding: 12px 0; font-size: 14px; }
+    .data-row:last-child { border-bottom: none; }
+    .data-title { font-weight: 600; font-size: 16px; margin-bottom: 4px;}
+    .data-subtitle { color: #8E8E93; }
+    
+    #mainApp, #loginSection, #registerSection, #adminSection, #loading { display: none; }
+    #loading { text-align: center; margin-top: 20px; color: #8E8E93; }
+    .badge-pending { background-color: #FF9500; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    .badge-active { background-color: var(--ios-green); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div id="loading">Memproses...</div>
+
+  <div id="loginSection">
+    <div class="ios-header" style="justify-content: center;">Login SO App</div>
+    <div class="container">
+      <div class="ios-card">
+        <input type="text" id="logUser" class="ios-input" placeholder="Username (Untuk Login)">
+        <input type="password" id="logPass" class="ios-input" placeholder="Password">
+        <button id="btnLogin" class="ios-button" onclick="login()">Login</button>
+        <button class="btn-text" onclick="showSection('registerSection')">Belum punya akun? Daftar</button>
+      </div>
+      <button class="ios-button" style="background-color: #8E8E93;" onclick="setupSheet()">🛠 Setup Sheet (1x Saja)</button>
+    </div>
+  </div>
+
+  <div id="registerSection">
+    <div class="ios-header">
+      <button class="header-btn" onclick="showSection('loginSection')">Batal</button>
+      <span>Daftar Akun</span>
+      <div style="width:40px;"></div>
+    </div>
+    <div class="container">
+      <div class="ios-card">
+        <p style="font-size: 14px; color: #8E8E93; text-align: center;">Isi Nama Staff sesuai dengan data di Sheet SOM.</p>
+        <input type="text" id="regUser" class="ios-input" placeholder="Buat Username">
+        <input type="text" id="regStaff" class="ios-input" placeholder="Nama Staff (Persis di sheet)">
+        <input type="password" id="regPass" class="ios-input" placeholder="Buat Password">
+        <button id="btnRegister" class="ios-button btn-green" onclick="register()">Daftar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mainApp">
+    <div class="ios-header">
+      <span id="welcomeUser">Data SO</span>
+      <button class="header-btn" onclick="logout()">Logout</button>
+    </div>
+    <div class="container">
+      <button id="btnAdminPanel" class="ios-button btn-green" style="display: none;" onclick="openAdminPanel()">👨‍💼 Buka Admin Panel</button>
+
+      <div class="ios-card">
+        <h3 style="margin-top:0; font-size: 15px; color: #8E8E93;">Filter Data</h3>
+        <input type="text" id="filterBrand" class="ios-input" placeholder="Brand...">
+        <div style="display: flex; gap: 10px;">
+          <input type="date" id="filterStartDate" class="ios-input" title="Tanggal Awal">
+          <input type="date" id="filterEndDate" class="ios-input" title="Tanggal Akhir">
+        </div>
+        <button class="ios-button" onclick="applyFilter()">Terapkan Filter</button>
+      </div>
+      <div class="ios-card" id="dataContainer"></div>
+    </div>
+  </div>
+
+  <div id="adminSection">
+    <div class="ios-header">
+      <button class="header-btn" onclick="showSection('mainApp')">Kembali</button>
+      <span>Approval</span>
+      <div style="width:40px;"></div>
+    </div>
+    <div class="container">
+      <div class="ios-card" id="adminDataContainer">
+        <div style="text-align: center; color: #8E8E93;">Memuat daftar user...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // MASUKKAN URL BARU DI SINI
+    const API_URL = "URL_WEB_APP_ANDA_DISINI"; 
+
+    let rawData = [];
+    let currentUser = "";
+    let currentRole = "";
+
+    function showSection(sectionId) {
+      ['loginSection', 'registerSection', 'mainApp', 'adminSection'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      document.getElementById(sectionId).style.display = 'block';
+    }
+
+    window.onload = async function() {
+      const savedToken = localStorage.getItem('so_auth_token');
+      const savedUser = localStorage.getItem('so_auth_user');
+      
+      if (savedToken && savedUser && API_URL !== "URL_WEB_APP_ANDA_DISINI") {
+        document.getElementById('loading').style.display = 'block';
+        try {
+          const res = await fetch(`${API_URL}?action=verify&token=${savedToken}&user=${savedUser}`);
+          const data = await res.json();
+          if(data.valid) {
+            currentUser = savedUser;
+            currentRole = data.role;
+            initMainApp();
+          } else { 
+            document.getElementById('loading').style.display = 'none';
+            showSection('loginSection'); 
+          }
+        } catch(e) { 
+          document.getElementById('loading').style.display = 'none';
+          showSection('loginSection'); 
+        }
+      } else { 
+        showSection('loginSection'); 
+      }
+    };
+
+    function initMainApp() {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('welcomeUser').innerText = `Hai, ${currentUser}`;
+      document.getElementById('btnAdminPanel').style.display = (currentRole === 'Admin') ? 'block' : 'none';
+      showSection('mainApp');
+      fetchData();
+    }
+
+    async function login() {
+      if(API_URL === "URL_WEB_APP_ANDA_DISINI") return alert("Isi API_URL terlebih dahulu!");
+      const user = document.getElementById('logUser').value;
+      const pass = document.getElementById('logPass').value;
+      if(!user || !pass) return alert("Isi username dan password!");
+
+      document.getElementById('loading').style.display = 'block';
+      try {
+        const res = await fetch(`${API_URL}?action=login&user=${user}&pass=${pass}`);
+        const data = await res.json();
+        if(data.success) {
+          localStorage.setItem('so_auth_token', data.token);
+          localStorage.setItem('so_auth_user', data.user);
+          currentUser = data.user;
+          currentRole = data.role;
+          initMainApp();
+        } else {
+          document.getElementById('loading').style.display = 'none';
+          alert(data.message);
+        }
+      } catch(e) { alert("Gagal koneksi."); document.getElementById('loading').style.display = 'none';}
+    }
+
+    async function register() {
+      const user = document.getElementById('regUser').value;
+      const staff = document.getElementById('regStaff').value;
+      const pass = document.getElementById('regPass').value;
+      
+      if(!user || !staff || !pass) return alert("Semua kolom wajib diisi!");
+      
+      document.getElementById('loading').style.display = 'block';
+      try {
+        const res = await fetch(`${API_URL}?action=register&user=${user}&staff=${staff}&pass=${pass}`);
+        const data = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        
+        if(data.success) {
+          alert(data.message);
+          showSection('loginSection');
+        } else { alert(data.error); }
+      } catch(e) { alert("Gagal mendaftar."); document.getElementById('loading').style.display = 'none'; }
+    }
+
+    function logout() {
+      localStorage.clear();
+      document.getElementById('logUser').value = '';
+      document.getElementById('logPass').value = '';
+      currentUser = ""; currentRole = "";
+      showSection('loginSection');
+    }
+
+    async function fetchData() {
+      document.getElementById('loading').style.display = 'block';
+      try {
+        const res = await fetch(`${API_URL}?action=getData&user=${currentUser}`);
+        const result = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        if(result.error) alert(result.error);
+        else { rawData = result.data; applyFilter(); }
+      } catch(e) { document.getElementById('loading').style.display = 'none'; }
+    }
+
+    function applyFilter() {
+      const brandVal = document.getElementById('filterBrand').value.toLowerCase();
+      const startDate = document.getElementById('filterStartDate').value;
+      const endDate = document.getElementById('filterEndDate').value;
+
+      if(rawData.length <= 1) return renderData([]);
+
+      const headers = rawData[0];
+      const rows = rawData.slice(1);
+      
+      const filteredRows = rows.filter(row => {
+        const brandMatch = row[4] ? row[4].toLowerCase().includes(brandVal) : false;
+        let dateMatch = true;
+        if(startDate && endDate && row[0]) {
+           dateMatch = (row[0] >= startDate && row[0] <= endDate);
+        }
+        return brandMatch && dateMatch;
+      });
+
+      renderData([headers, ...filteredRows]);
+    }
+
+    function renderData(dataToRender) {
+      const container = document.getElementById('dataContainer');
+      container.innerHTML = '';
+      if (dataToRender.length <= 1) { container.innerHTML = '<div style="text-align: center; color: #8E8E93;">Tidak ada data.</div>'; return; }
+
+      for (let i = 1; i < dataToRender.length; i++) {
+        const row = dataToRender[i];
+        container.innerHTML += `
+          <div class="data-row">
+            <div style="display: flex; justify-content: space-between;">
+              <span class="data-title">${row[4] || '-'} - ${row[6] || '-'}</span>
+              <span style="color: var(--ios-blue); font-weight: bold;">Qty: ${row[8] || '0'}</span>
+            </div>
+            <div class="data-subtitle">Tgl: ${row[0] || '-'} | Staff: ${row[2] || '-'} | Code: ${row[5] || '-'}</div>
+          </div>
+        `;
+      }
+    }
+
+    async function openAdminPanel() {
+      showSection('adminSection');
+      document.getElementById('adminDataContainer').innerHTML = '<div style="text-align: center; color: #8E8E93;">Memuat data...</div>';
+      try {
+        const res = await fetch(`${API_URL}?action=getUsers&adminUser=${currentUser}`);
+        const result = await res.json();
+        if(result.error) alert(result.error);
+        else renderAdminUsers(result.data);
+      } catch(e) { alert("Gagal memuat admin panel."); }
+    }
+
+    function renderAdminUsers(users) {
+      const container = document.getElementById('adminDataContainer');
+      container.innerHTML = '';
+      if(users.length === 0) { container.innerHTML = 'Tidak ada user lain.'; return; }
+
+      users.forEach(u => {
+        const statusBadge = u.status === 'Pending' ? `<span class="badge-pending">Pending</span>` : `<span class="badge-active">Active</span>`;
+        let actionButtons = '';
+        
+        if (u.status === 'Pending') {
+          actionButtons = `<button class="ios-button btn-green" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'approveUser')">Approve</button>
+                           <button class="ios-button btn-red" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'rejectUser')">Tolak</button>`;
+        } else {
+          actionButtons = `<button class="ios-button btn-red" style="padding: 8px; font-size:14px;" onclick="manageUser('${u.username}', 'rejectUser')">Hapus</button>`;
+        }
+
+        container.innerHTML += `
+          <div class="data-row">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div class="data-title">${u.username} ${statusBadge}</div>
+                <div class="data-subtitle">Nama Staff: ${u.staff}</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">${actionButtons}</div>
+          </div>
+        `;
+      });
+    }
+
+    async function manageUser(targetUser, action) {
+      if(!confirm(`Yakin ingin melakukan aksi ini pada ${targetUser}?`)) return;
+      document.getElementById('loading').style.display = 'block';
+      try {
+        const res = await fetch(`${API_URL}?action=${action}&adminUser=${currentUser}&targetUser=${targetUser}`);
+        const data = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        alert(data.message || data.error);
+        openAdminPanel(); // Refresh list
+      } catch(e) { document.getElementById('loading').style.display = 'none'; alert("Gagal!"); }
+    }
+
+    async function setupSheet() {
+      try { 
+        document.getElementById('loading').style.display = 'block';
+        const res = await fetch(`${API_URL}?action=setup`); 
+        const data = await res.json(); 
+        document.getElementById('loading').style.display = 'none';
+        alert(data.message); 
+      } catch(e) { 
+        document.getElementById('loading').style.display = 'none';
+        alert("Gagal melakukan setup."); 
+      }
+    }
+  </script>
+</body>
+</html>
